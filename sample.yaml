@@ -1,68 +1,41 @@
 ---
-- name: User & Folder Management Demo
+- name: User & Group Management Demo
   hosts: all
   become: yes
 
   vars:
-    app_group: appgroup
+    app_group: inventorygrp
     app_password: "{{ 'P@ssw0rd' | password_hash('sha512') }}"
-    app_dirs:
-      - /opt/myapp
-      - /var/log/myapp
+    workdir: /opt/inventory
 
   tasks:
 
-    - name: Ensure group exists
+    - name: Ensure application group exists
       group:
         name: "{{ app_group }}"
         state: present
 
-    - name: Ensure user exists
+    - name: Ensure application user exists
       user:
         name: "{{ app_user }}"
         group: "{{ app_group }}"
         password: "{{ app_password }}"
         create_home: yes
-        shell: /bin/bash"
+        shell: /bin/bash
         state: present
 
-    - name: Create directories for application
+    - name: Create work directory for application user
       file:
-        path: "{{ item }}"
+        path: "{{ workdir }}"
         state: directory
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
-        mode: "0750"
-      loop: "{{ app_dirs }}"
+        mode: '0750'
 
-    - name: Create config directory
-      file:
-        path: "/etc/myapp"
-        state: directory
-        owner: root
-        group: root
-        mode: "0755"
-
-    - name: Deploy application config file
+    - name: Create information file owned by application user
       copy:
-        dest: /etc/myapp/myapp.conf
-        content: |
-          # Simple MyApp config
-          user={{ app_user }}
-          log_dir=/var/log/myapp
-          install_path=/opt/myapp
-        mode: "0644"
-
-    - name: Create a file using the application user
-      copy:
-        dest: "/opt/myapp/created_by_user.txt"
+        dest: "{{ workdir }}/info.txt"
         content: "file ini dibuat menggunakan user {{ app_user }}"
-        mode: "0644"
-      become: yes
-      become_user: "{{ app_user }}"
-
-    - name: Give user sudo permission (optional)
-      copy:
-        dest: /etc/sudoers.d/{{ app_user }}
-        content: "{{ app_user }} ALL=(ALL) NOPASSWD:ALL"
-        mode: "0440"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: '0644'
