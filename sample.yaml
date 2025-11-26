@@ -1,5 +1,5 @@
 ---
-- name: User & Folder Management Demo (Offline & No SSH Key)
+- name: User & Folder Management Demo
   hosts: all
   become: yes
 
