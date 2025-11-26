@@ -2,12 +2,6 @@
 - name: User & Group Management Demo
   hosts: all
   become: yes
-
-  vars:
-    app_group: inventorygrp
-    app_password: "{{ 'P@ssw0rd' | password_hash('sha512') }}"
-    workdir: /opt/inventory
-
   tasks:
 
     - name: Ensure application group exists
