@@ -29,7 +29,7 @@
     - name: Create information file owned by application user
       copy:
         dest: "{{ workdir }}/info.txt"
-        content: "file ini dibuat menggunakan user {{ app_user }}"
+        content: "user {{ app_user }} sudah berhasil dibuat"
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
         mode: '0644'
