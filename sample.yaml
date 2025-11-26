@@ -4,7 +4,6 @@
   become: yes
 
   vars:
-    app_user: appadmin
     app_group: appgroup
     app_password: "{{ 'P@ssw0rd' | password_hash('sha512') }}"
     app_dirs:
